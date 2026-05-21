@@ -7,9 +7,9 @@ const contentBlockSchema = new mongoose.Schema({
     enum: ["p", "h3", "ul", "ol", "callout", "callout-warn", "steps", "img"],
     required: true,
   },
-  text: { type: String },             // p, h3, callout, callout-warn
-  items: { type: [String] },          // ul, ol
-  stepItems: [                        // steps
+  text: { type: String },
+  items: { type: [String] },
+  stepItems: [
     {
       n: String,
       title: String,
@@ -17,7 +17,7 @@ const contentBlockSchema = new mongoose.Schema({
       tip: String,
     },
   ],
-  src: { type: String },              // img block
+  src: { type: String },
   alt: { type: String },
 }, { _id: false });
 
@@ -54,7 +54,7 @@ const relatedSchema = new mongoose.Schema({
 // ── Main Blog schema ─────────────────────────────────────────
 const blogSchema = new mongoose.Schema(
   {
-    // Core
+    // Core — unique:true already creates the index; no separate schema.index needed
     slug: { type: String, required: true, unique: true, lowercase: true, trim: true },
     title: { type: String, required: true, trim: true },
     excerpt: { type: String, required: true },
@@ -65,15 +65,15 @@ const blogSchema = new mongoose.Schema(
     },
 
     // Dates & meta
-    date: { type: String, required: true },           // "April 20, 2025"
+    date: { type: String, required: true },
     readTime: { type: String, default: "5 min read" },
     author: { type: String, default: "Compliance & Regulatory Team" },
     featured: { type: Boolean, default: false },
     status: { type: String, enum: ["draft", "published"], default: "draft" },
 
     // Images
-    img: { type: String, required: true },            // listing card thumbnail
-    heroImg: { type: String },                        // detail page hero
+    img: { type: String, required: true },
+    heroImg: { type: String },
     heroGradient: { type: String, default: "linear-gradient(135deg,rgba(13,27,42,0.97) 0%,rgba(10,109,170,0.82) 100%)" },
 
     // SEO
@@ -85,7 +85,7 @@ const blogSchema = new mongoose.Schema(
       ogDescription: { type: String },
       ogImage: { type: String },
       canonicalUrl: { type: String },
-      structuredData: { type: String },               // JSON-LD string
+      structuredData: { type: String },
       noIndex: { type: Boolean, default: false },
     },
 
@@ -116,8 +116,8 @@ const blogSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Index for slug lookup
-blogSchema.index({ slug: 1 });
+// ── Indexes ──────────────────────────────────────────────────
+// slug index is auto-created by unique:true above — do NOT add schema.index({ slug: 1 })
 blogSchema.index({ status: 1, createdAt: -1 });
 blogSchema.index({ tag: 1 });
 blogSchema.index({ featured: 1 });
