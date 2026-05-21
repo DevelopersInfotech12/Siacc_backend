@@ -38,13 +38,15 @@ app.use("/uploads", (req, res, next) => {
 // Rate limiting
 app.use("/api", apiLimiter);
 
+// Health check
+const healthCheck = (req, res) => res.json({ status: "ok", timestamp: new Date().toISOString() });
+app.get("/", healthCheck);
+app.get("/api/health", healthCheck);
+
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/blogs", blogRoutes);
 app.use("/api/upload", uploadRoutes);
-
-// Health check
-app.get("/api/health", (req, res) => res.json({ status: "ok", timestamp: new Date().toISOString() }));
 
 // Error handlers
 app.use(notFound);
