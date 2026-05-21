@@ -18,12 +18,25 @@ const PORT = process.env.PORT || 5000;
 // Connect DB
 connectDB();
 
+// Allowed CORS origins
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://siacc.co.in",
+  "https://www.siacc.co.in",
+  ...(process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : []),
+];
+
 // Security & parsing
 app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" },
 }));
 app.use(cors({
-  origin: process.env.FRONTEND_URL || "http://localhost:3000",
+  origin: (origin, callback) => {
+    // allow requests with no origin (Postman, mobile, curl)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    callback(new Error(`CORS blocked: ${origin}`));
+  },
   credentials: true,
 }));
 app.use(express.json({ limit: "10mb" }));

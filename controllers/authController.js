@@ -53,7 +53,7 @@ export const changePassword = asyncHandler(async (req, res) => {
   res.json({ success: true, message: "Password updated successfully" });
 });
 
-// POST /api/auth/seed  — creates first admin (disable in production after use)
+// POST /api/auth/seed — creates first admin (disable in production after use)
 export const seedAdmin = asyncHandler(async (req, res) => {
   if (process.env.NODE_ENV === "production") {
     throw new AppError("Seed not available in production", 403);
